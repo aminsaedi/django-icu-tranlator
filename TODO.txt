@@ -1,0 +1,1 @@
+remove filter string='' from auto translate when we have mysql in production

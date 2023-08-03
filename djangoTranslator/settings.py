@@ -128,21 +128,21 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000_000 # higher than the count of fields
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000_000  # higher than the count of fields
 
 CRONJOBS = [
     # Cron jobs for string translation
     ('*/10 * * * *', 'translate.crons.fetcher.update_translation_strings'),
     ('*/15 * * *', 'translate.crons.translator.translate_all_strings'),
     ('* 5 * * *', 'translate.crons.updator.create_pull_request_for_strings'),
-    # Cron jobs for enum translation  
-    ('*/5 * * * *', 'translate.crons.translator.translate_all_enums'),
+    # Cron jobs for enum translation
     ('*/2 * * * *', 'translate.crons.backend.update_enums_in_db'),
-    ('*/30 * * * *', 'translate.crons.updator.create_pull_request_for_enums'),
+    ('*/5 * * * *', 'translate.crons.translator.translate_all_enums'),
+    ('1 */1 * * *', 'translate.crons.updator.create_pull_request_for_enums'),
 ]
 
 
-GIT_URL=os.environ.get('GIT_URL')
+GIT_URL = os.environ.get('GIT_URL')
 
 
 # create pull request configs
