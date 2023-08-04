@@ -169,11 +169,16 @@ class CustomKey(TimeStampMixin):
     def __str__(self):
         return self.formatjs_id
 
+    class Meta:
+        verbose_name = 'custom key translation'
+        verbose_name_plural = '3. Custom Key Translations'
+
 
 class CustomKeyTranslation(TimeStampMixin):
     custom_key = models.ForeignKey(CustomKey, on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     string = models.CharField(max_length=255, blank=True, default='')
+    is_approved = models.BooleanField(default=False)
 
     class Meta:
         constraints = [

@@ -226,7 +226,7 @@ class CustomKeyTranslationNestedInline(NestedStackedInline):
     model = CustomKeyTranslation
     fk_name = 'custom_key'
     extra = 0
-    fields = ('language', 'string')
+    fields = ('language', 'string', 'is_approved')
     # readonly_fields = ('language', )
 
     def has_delete_permission(self, request: HttpRequest, obj=None) -> bool:

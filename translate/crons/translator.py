@@ -1,7 +1,7 @@
 from deep_translator import GoogleTranslator
 from datetime import datetime
 from django.db.models import Q
-from ..models import ApplicationStringsTranslation, AutoTranslationLog, GraphqlEnumValueTranslation
+from ..models import ApplicationStringsTranslation, AutoTranslationLog, GraphqlEnumValueTranslation, CustomKeyTranslation
 
 
 def get_target_lang(full_lang_code):
@@ -58,6 +58,16 @@ def translate_all_enums():
         enum.string = GoogleTranslator(source='en', target=get_target_lang(
             enum.language.code)).translate(english_translation.string)
         enum.save()
+        total += 1
+        log.total_translated = total
+        log.save()
+
+    for custom_key in CustomKeyTranslation.objects.filter(is_approved=False, string='').exclude(language__code='en-US'):
+        english_translation = CustomKeyTranslation.objects.get(
+            custom_key=custom_key.custom_key, language__code='en-US')
+        custom_key.string = GoogleTranslator(source='en', target=get_target_lang(
+            custom_key.language.code)).translate(english_translation.string)
+        custom_key.save()
         total += 1
         log.total_translated = total
         log.save()
