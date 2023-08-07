@@ -1,3 +1,9 @@
+# TODO:
+- [ ] Add the usage section
+- [ ] Add the screenshots
+- [ ] Add Docker setup section
+
+
 # Django ICU translator
 
 Django ICU Translator is a straightforward Django application designed for translating ICU format messages and GraphQL enums with ease.
