@@ -2,10 +2,11 @@ import shutil
 import os
 from git import Repo
 from django.conf import settings
-from django.db.models import Q
+from django.db.models import Count
+from django.db.models.functions import Lower
 import subprocess
 import json
-from ..models import Language, ApplicationString, ApplicationStringsTranslation
+from ..models import Language, ApplicationString, ApplicationStringsTranslation, DuplicateString
 from ..apps import TranslateConfig
 
 BASE_DIR = str(settings.BASE_DIR)
@@ -14,16 +15,11 @@ APP_NAME = TranslateConfig.name
 def update_translation_strings():
     try:
         shutil.rmtree(BASE_DIR + f'/{APP_NAME}/temp/frontendFetch')
-        shutil.rmtree(BASE_DIR + f'/{APP_NAME}/temp/extractLang')
-        os.mkdir(BASE_DIR + f'/{APP_NAME}/temp/extractLang')
     except FileNotFoundError:
         pass
     Repo.clone_from(settings.GIT_URL, BASE_DIR + f'/{APP_NAME}/temp/frontendFetch')
-    """
-        Run this command to get the latest translation strings from the frontend repo
-        npx --yes @formatjs/cli extract 'src/**/*.(js|jsx|ts|tsx)' --ignore='**/*.d.ts' --out-file extractLang/en.json --id-interpolation-pattern '[sha512:contenthash:base64:6]
-    """
-    result = subprocess.run(['npx', '--yes', '@formatjs/cli', 'extract', f'{BASE_DIR}/{APP_NAME}/tmp/frontendFetch/src/**/*.(js|jsx|ts|tsx)', '--ignore=\'**/*.d.ts\'', '--out-file', f'{BASE_DIR}/{APP_NAME}/temp/extractLang/en.json', '--id-interpolation-pattern', '[sha512:contenthash:base64:6]'])
+
+    result = subprocess.run(['./extract.sh'], cwd=f'{BASE_DIR}/{APP_NAME}/temp/frontendFetch', stdout=subprocess.PIPE)
     """
         Check if the command was successful
     """
@@ -36,7 +32,6 @@ def update_translation_strings():
         data = json.load(f)
     try:
         shutil.rmtree(BASE_DIR + f'/{APP_NAME}/temp/frontendFetch')
-        shutil.rmtree(BASE_DIR + f'/{APP_NAME}/temp/extractLang')
     except FileNotFoundError:
         pass
     """
@@ -50,9 +45,10 @@ def update_translation_strings():
 
     """
 
+
     for formatjs_id, translation_string in data.items():
         try:
-            translation_string = ApplicationString.objects.get(formatjs_id=formatjs_id)
+            ApplicationString.objects.get(formatjs_id=formatjs_id)
         except ApplicationString.DoesNotExist:
             translation_string = ApplicationString(
                 formatjs_id=formatjs_id,
@@ -75,7 +71,23 @@ def update_translation_strings():
                     string='',
                     is_approved=False
                 ).save()
-    
+
     for application_string in ApplicationString.objects.all():
         if application_string.formatjs_id not in data.keys():
+            print(application_string.formatjs_id + ' deleted')
             application_string.delete()
+
+    DuplicateString.objects.all().delete()
+
+    duplicates = ApplicationString.objects.annotate(message_lower=Lower("default_message")).values("message_lower").annotate(count=Count("message_lower"))
+
+    for duplicate in duplicates:
+        if duplicate['count'] > 1:
+            duplicate_string = DuplicateString(
+                default_message=duplicate['message_lower'],
+                count=duplicate['count']
+            )
+            duplicate_string.save()
+
+    
+    

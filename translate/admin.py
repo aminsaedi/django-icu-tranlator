@@ -1,10 +1,10 @@
-from typing import Optional
 from django.contrib import admin
 from django.http.request import HttpRequest
 from nested_inline.admin import NestedStackedInline, NestedModelAdmin
 from admin_auto_filters.filters import AutocompleteFilter
 from django.utils.html import format_html_join
 from django import forms
+from admin_numeric_filter.admin import SliderNumericFilter, NumericFilterModelAdmin
 
 
 from .models import *
@@ -248,3 +248,27 @@ class CustomKeysAdmin(NestedModelAdmin):
 
 
 admin.site.register(CustomKey, CustomKeysAdmin)
+
+@admin.register(DuplicateString)
+class DuplicateStringAdmin(NumericFilterModelAdmin):
+    list_display = ('default_message', 'count', 'list_of_ids')
+    search_fields = ('default_message',)
+    list_filter = (('count', SliderNumericFilter),)
+    readonly_fields = ('default_message', 'count')
+
+    def list_of_ids(self, obj: DuplicateString) -> str:
+        items = ApplicationString.objects.filter(default_message__iexact=obj.default_message).values_list('formatjs_id', flat=True)
+        return ', '.join(items)
+    
+
+    def has_change_permission(self, request=None, obj=None) -> bool:
+        return False
+
+    def has_delete_permission(self, request=None, obj=None) -> bool:
+        return False
+
+    def has_add_permission(self, request: HttpRequest) -> bool:
+        return False
+
+
+

@@ -93,6 +93,14 @@ class ApplicationString(TimeStampMixin):
         verbose_name_plural = '1. Application Strings'
 
 
+class DuplicateString(TimeStampMixin):
+    default_message = models.TextField()
+    count = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.default_message
+
+
 class ApplicationStringsTranslation(TimeStampMixin):
     translation_string = models.ForeignKey(
         ApplicationString, on_delete=models.CASCADE)
