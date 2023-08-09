@@ -75,3 +75,7 @@ def update_translation_strings():
                     string='',
                     is_approved=False
                 ).save()
+    
+    for application_string in ApplicationString.objects.all():
+        if application_string.formatjs_id not in data.keys():
+            application_string.delete()
