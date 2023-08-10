@@ -147,13 +147,15 @@ def create_pull_request_for_enums():
             for enum in all_enums:
                 json_dict[enum.enum_value.name] = enum.string if enum.string else ''
 
+
             # all custom keys
             all_customs = CustomKeyTranslation.objects.filter(language=lang)
             for custom in all_customs:
                 json_dict[custom.custom_key.formatjs_id] = custom.string if custom.string else ''
 
             # also the language it self should be in the enums list
-            json_dict[lang.code] = lang.name
+            for lang2 in Language.objects.all():
+                json_dict[lang2.code] = lang2.name
             with open(f'{BASE_DIR}/{APP_NAME}/temp/frontendEnum/downloadLang/enums/{lang.code}.json', 'w') as f:
                 f.write(json.dumps(json_dict, ensure_ascii=False, indent=4))
 
