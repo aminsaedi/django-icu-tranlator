@@ -24,9 +24,10 @@ RUN ln -sf python3 /usr/bin/python \
     && git config --global user.name "Docker Bot" \
     && git config --global user.email "bot@orangedigital.com"
 
-RUN python3 -m ensurepip \
-    && pip3 install --no-cache --upgrade pip setuptools \
-    && pip install pytz tzdata --upgrade
+RUN python3 -m ensurepip
+RUN pip3 install --no-cache --upgrade pip setuptools pytz tzdata
+# RUN pip install pytz tzdata --upgrade
+# RUN pip install tzdata --upgrade
 
 # Stage 2: Copy application code and dependencies
 FROM build-python AS app
@@ -34,7 +35,7 @@ FROM build-python AS app
 WORKDIR /app
 
 COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY . /app
 
