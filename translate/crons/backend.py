@@ -29,6 +29,7 @@ def get_access_token():
             'username': USERNAME,
             'password': PASSWORD,
             'auth': 'basic'
+            'recaptchaToken': 'test'
         }
 
         response = requests.post(url, headers=headers, json=data)
