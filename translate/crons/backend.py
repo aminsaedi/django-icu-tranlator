@@ -28,7 +28,7 @@ def get_access_token():
             'grant_type': 'password',
             'username': USERNAME,
             'password': PASSWORD,
-            'auth': 'basic'
+            'auth': 'basic',
             'recaptchaToken': 'test'
         }
 
