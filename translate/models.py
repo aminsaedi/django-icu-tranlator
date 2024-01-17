@@ -25,6 +25,7 @@ class Language(TimeStampMixin):
         ('fa-IR', 'Persian (Iran)'),
         ('he-IL', 'Hebrew'),
         ('pt-BR', 'Portuguese (Brazil)'),
+        ('es-ES', 'Spanish (Spain)'),
 
     ]
 
