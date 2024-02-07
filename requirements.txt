@@ -12,7 +12,7 @@ cryptography==42.0.0
 daphne==4.0.0
 deep-translator==1.11.4
 Deprecated==1.2.14
-Django==4.2.7
+Django==4.2.10
 django-admin-autocomplete-filter==0.7.1
 django-admin-numeric-filter==0.1.9
 django-crontab==0.7.1
