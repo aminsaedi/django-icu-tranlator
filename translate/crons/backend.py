@@ -6,46 +6,12 @@ from django.conf import settings
 from ..models import GraphqlEnum, GraphqlEnumValue, GraphqlEnumValueTranslation, Language
 
 BASE_URL = settings.BACKEND_BASE_URL
-AUTHORIZATION = settings.BACKEND_AUTHORIZATION
-USERNAME = settings.BACKEND_USERNAME
-PASSWORD = settings.BACKEND_PASSWORD
-
-
-def get_access_token():
-    try:
-        # authenticate url
-        url = BASE_URL + '/auth/local'
-
-        # authenticate headers
-        headers = {
-            'Authorization': f'Basic {AUTHORIZATION}',
-            'Origin': 'https://webapp.orangedigitalcloud.com',
-            'Referer': 'https://webapp.orangedigitalcloud.com/'
-        }
-
-        # authenticate data
-        data = {
-            'grant_type': 'password',
-            'username': USERNAME,
-            'password': PASSWORD,
-            'auth': 'basic',
-            'recaptchaToken': 'test'
-        }
-
-        response = requests.post(url, headers=headers, json=data)
-
-        # extract access token
-        access_token = response.json()["access_token"]
-        return access_token
-    except Exception as e:
-        raise e
-
 
 def read_enums_in_server():
     try:
         # Define the GraphQL endpoint
         url = BASE_URL + "/graphql"
-        headers = {"Authorization": "Bearer " + get_access_token()}
+        headers = {"ci": "true"}
 
         # Define the introspection query
         query = """

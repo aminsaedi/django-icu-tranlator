@@ -23,7 +23,8 @@ def update_translation_strings():
         shutil.rmtree(BASE_DIR + f"/{APP_NAME}/temp/frontendFetch")
     except FileNotFoundError:
         pass
-    Repo.clone_from(settings.GIT_URL, BASE_DIR + f"/{APP_NAME}/temp/frontendFetch")
+    Repo.clone_from(settings.GIT_URL, BASE_DIR + f"/{APP_NAME}/temp/frontendFetch", branch="development")
+    
 
     result = subprocess.run(
         ["./extract.sh"],

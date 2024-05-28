@@ -38,7 +38,7 @@ def create_pull_request(source_branch: str, title: str) -> bool:
         'Content-Type': 'application/json',
     }
     data = {'title': title, 'description': '-', 'source': {
-        'branch': {'name': source_branch}}, 'destination': {'branch': {'name': 'master'}}}
+        'branch': {'name': source_branch}}, 'destination': {'branch': {'name': 'development'}}}
     response = requests.post(BITBUCKET_URL, headers=headers, json=data, auth=(
         BITBUCKET_USERNAME, BITBUCKET_PASSWORD))
     if response.status_code != 201:
@@ -58,7 +58,7 @@ def create_pull_request_for_strings():
             pass
 
         Repo.clone_from(settings.GIT_URL, BASE_DIR +
-                        f'/{APP_NAME}/temp/frontendUpdate')
+                        f'/{APP_NAME}/temp/frontendUpdate', branch='development')
 
         for lang in Language.objects.all():
             with open(f'{BASE_DIR}/{APP_NAME}/temp/frontendUpdate/downloadLang/{lang.code}.json', 'w') as f:
@@ -137,7 +137,7 @@ def create_pull_request_for_enums():
             pass
 
         Repo.clone_from(settings.GIT_URL, BASE_DIR +
-                        f'/{APP_NAME}/temp/frontendEnum')
+                        f'/{APP_NAME}/temp/frontendEnum', branch='development')
 
         #  DO THE REST HERE
         for lang in Language.objects.all():
